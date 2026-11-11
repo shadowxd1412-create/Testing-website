@@ -1,1 +1,377 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Offcut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@1&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--bg:#0b0b0c;
+--ink:#f1efec;
+--mute:#8d8a86;
+--red:#b3121b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{
+color:var(--ink);
+font-family:Inter,Arial,sans-serif;
+-webkit-font-smoothing:antialiased;
+user-select:none;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+#art{
+position:absolute;
+width:1500px;height:1000px;
+left:0;top:0;
+transform-origin:0 0;
+background:radial-gradient(ellipse 70% 55% at 50% 40%,#18181a,var(--bg));
+}
+.ui{font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}
+.dim{transition:opacity .7s,filter .7s}
+.dimmer{transition:opacity .7s}
+body.open .dim{opacity:.12;filter:blur(2px)}
+body.open .dimmer{opacity:0;pointer-events:none}
+
+.pill{
+height:34px;padding:0 20px;
+border:1px solid rgba(241,239,236,.6);
+border-radius:40px;
+display:inline-grid;place-items:center;
+transition:background .25s,color .25s;
+}
+.pill:hover{background:var(--ink);color:var(--bg)}
+
+#about{position:absolute;left:46px;top:46px}
+#logo{
+position:absolute;left:50%;top:26px;
+transform:translateX(-50%);
+font:400 64px/1 UnifrakturMaguntia,serif;
+letter-spacing:.01em;
+}
+#contact{position:absolute;right:46px;top:46px}
+
+#rail{
+position:absolute;left:150px;right:150px;
+top:254px;height:12px;border-radius:6px;
+background:linear-gradient(to bottom,#fafafa 0%,#b9bcc1 28%,#5d6066 55%,#a9adb3 78%,#e6e7e9 100%);
+box-shadow:0 10px 18px rgba(0,0,0,.45);
+}
+#rail:before,#rail:after{
+content:"";position:absolute;top:-9px;
+width:16px;height:30px;border-radius:5px;
+background:linear-gradient(90deg,#8d9096,#f3f3f4 45%,#7a7d83);
+}
+#rail:before{left:-14px}
+#rail:after{right:-14px}
+
+#rack{position:absolute;inset:0;width:1500px;height:1000px}
+.garment{
+position:absolute;top:254px;
+width:289px;height:300px;
+perspective:1000px;
+cursor:pointer;
+}
+.garment-inner{
+position:absolute;inset:0;
+transform-origin:50% 4%;
+transform:rotateY(88deg);
+transform-style:preserve-3d;
+transition:transform .8s cubic-bezier(.2,.8,.2,1);
+}
+.garment:hover .garment-inner,
+.garment:focus-visible .garment-inner{transform:rotateY(0deg)}
+.garment-face{
+position:absolute;inset:0;
+background-repeat:no-repeat;
+backface-visibility:hidden;
+filter:drop-shadow(0 12px 13px rgba(0,0,0,.42));
+}
+
+#cap{
+position:absolute;top:552px;left:50%;
+transform:translateX(-50%);
+text-align:center;font-size:11px;
+letter-spacing:.12em;text-transform:uppercase;
+color:var(--mute);white-space:nowrap;
+opacity:0;pointer-events:none;
+transition:left .75s cubic-bezier(.2,.8,.2,1),opacity .35s;
+}
+#cap.on{opacity:1}
+#cap b{display:block;color:var(--ink);font-weight:500;margin-bottom:4px}
+
+#avail{position:absolute;left:50%;top:790px;transform:translateX(-50%)}
+
+#band{
+position:absolute;left:0;right:0;bottom:0;
+height:46px;background:var(--red);
+overflow:hidden;display:flex;align-items:center;
+}
+.track{
+display:flex;white-space:nowrap;
+font-size:13px;font-weight:600;
+letter-spacing:.14em;
+animation:marquee 22s linear infinite;
+}
+.track span{padding-right:22px}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+#det{position:absolute;inset:0;pointer-events:none}
+body.open #det{pointer-events:auto}
+.hit{position:absolute;inset:0}
+
+#big,#big2{
+position:absolute;left:50%;top:244px;
+width:473px;height:492px;
+margin-left:-236.5px;
+background-repeat:no-repeat;
+opacity:0;pointer-events:none;
+}
+#big2{transform-origin:center}
+#big{
+transform-origin:50% 4%;
+filter:drop-shadow(0 30px 40px rgba(0,0,0,.6));
+transition:opacity .35s,transform .5s;
+}
+body.open #big{opacity:1}
+
+.arr{
+position:absolute;top:452px;
+width:46px;height:46px;
+border:1px solid rgba(241,239,236,.5);
+border-radius:50%;
+display:grid;place-items:center;
+opacity:0;
+transition:opacity .4s .25s,background .2s,color .2s;
+}
+#prev{left:calc(50% - 300px)}
+#next{left:calc(50% + 254px)}
+.arr:hover{background:var(--ink);color:var(--bg)}
+.arr svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+
+#info{
+position:absolute;left:50%;top:770px;
+transform:translateX(-50%);
+text-align:center;opacity:0;
+transition:opacity .5s .25s;
+white-space:nowrap;
+}
+#num{font-size:11px;letter-spacing:.16em;color:var(--mute)}
+#name{font:italic 400 40px/1.15 "Instrument Serif",serif;margin:8px 0 6px}
+#price{font-size:13px;letter-spacing:.08em;color:var(--mute);margin-bottom:18px}
+
+#close{
+position:absolute;right:46px;top:46px;
+opacity:0;transition:opacity .4s .25s;
+pointer-events:none;
+}
+body.open #info,body.open .arr,body.open #close{
+opacity:1;pointer-events:auto;
+}
+</style>
+</head>
+
+<body>
+<div id="art">
+
+<div id="about" class="ui dim">About</div>
+<div id="logo" class="dim">Offcut</div>
+<div id="contact" class="ui dim dimmer">Contact</div>
+
+<div id="rail" class="dim"></div>
+<div id="rack" class="dim"></div>
+
+<div id="cap" class="dimmer">
+<b></b><span></span>
+</div>
+
+<button id="avail" class="pill ui dim dimmer">See availability</button>
+
+<div id="band" class="dimmer">
+<div class="track" id="track"></div>
+</div>
+
+<div id="det">
+<div class="hit"></div>
+<div id="big2"></div>
+<div id="big"></div>
+
+<button id="prev" class="arr" aria-label="Previous">
+<svg viewBox="0 0 24 24"><path d="M15 5L8 12L15 19"/></svg>
+</button>
+
+<button id="next" class="arr" aria-label="Next">
+<svg viewBox="0 0 24 24"><path d="M9 5L16 12L9 19"/></svg>
+</button>
+
+<div id="info">
+<div id="num"></div>
+<div id="name"></div>
+<div id="price"></div>
+<button class="pill ui">See availability</button>
+</div>
+
+<button id="close" class="ui">Close</button>
+</div>
+</div>
+
+<script>
+const SW=2048,SH=1360,CW=409.6,CH=530,PAD=50,BW=509.6;
+const ROWY=[80,700];
+
+const SHEET="https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261107_130252_7b1b8485-d5c5-440c-8921-f5ae01054c6a.png&w=2048&q=90";
+
+const products=[
+["Winged Skull Tee","€48",0],
+["Heavy Blank Tee — Black","€38",1],
+["Heavy Blank Tee — White","€38",2],
+["Offcut Longsleeve","€55",3],
+["Rose & Chain Tee","€52",4],
+["Varsity Jacket","€240",5],
+["No Restocks Longsleeve","€58",6],
+["Arch Logo Hoodie","€95",7],
+["Barbed Heart Tee","€48",8],
+["Black Zip Hoodie","€98",9],
+["Offcut Shadow Hoodie","€105",9]
+];
+
+const shapes=[
+"polygon(52.98% 2.08%,51.41% 3.96%,51.81% 3.96%,52.98% 2.45%,55.34% 2.45%,56.12% 3.21%,56.12% 5.47%,54.55% 7.17%,54.36% 9.25%,51.61% 10.38%,47.88% 15.09%,45.92% 16.60%,44.74% 16.60%,31.20% 23.40%,29.24% 25.28%,25.51% 30.94%,14.13% 53.58%,25.51% 60.19%,28.85% 61.70%,28.26% 82.45%,28.65% 96.79%,45.33% 96.79%,49.25% 96.42%,52% 95.66%,56.51% 95.66%,62.60% 96.79%,79.47% 96.79%,80.06% 90.38%,79.87% 61.89%,94.39% 53.77%,83.99% 32.08%,79.47% 24.72%,75.94% 22.26%,64.76% 16.79%,63.58% 16.79%,60.24% 13.96%,59.26% 12.08%,57.50% 10.19%,54.95% 9.25%,54.95% 7.17%,56.71% 5.09%,56.71% 3.58%,55.14% 1.89%)",
+
+"polygon(53.85% 1.89%,52.47% 2.83%,51.88% 3.96%,52.28% 3.96%,53.45% 2.45%,55.61% 2.45%,56.59% 3.58%,56.59% 5.28%,54.83% 7.17%,54.83% 9.25%,52.47% 10%,50.90% 11.51%,49.14% 14.34%,46.39% 16.60%,45.41% 16.60%,35.60% 21.51%,30.89% 24.53%,26.77% 31.13%,26.37% 32.64%,21.86% 41.32%,15.97% 54.34%,24.80% 59.81%,29.51% 62.08%,28.53% 86.23%,28.53% 94.91%,28.92% 96.79%,44.62% 96.79%,48.55% 96.42%,52.28% 95.47%,57.77% 95.47%,60.32% 96.23%,64.05% 96.60%,80.73% 96.79%,80.93% 71.51%,80.53% 62.08%,93.88% 54.53%,93.88% 53.96%,92.90% 52.64%,92.90% 51.13%,83.87% 32.08%,79.55% 24.72%,75.63% 21.89%,71.11% 20%,64.84% 16.60%,63.85% 16.60%,61.89% 15.28%,58.16% 10.38%,55.22% 9.25%,55.22% 7.55%,56.79% 5.66%,57.18% 3.77%,55.81% 2.08%)",
+
+"polygon(49.61% 1.89%,48.43% 2.45%,47.45% 3.96%,47.84% 3.96%,49.02% 2.45%,51.18% 2.45%,52.16% 3.40%,52.16% 5.28%,50.59% 6.98%,50.39% 9.25%,47.65% 10.38%,46.27% 11.70%,44.31% 14.72%,42.15% 16.42%,40.78% 16.60%,30.57% 21.70%,26.45% 24.53%,22.33% 31.32%,12.52% 52.08%,13.70% 54.53%,25.67% 61.51%,24.69% 86.79%,24.69% 95.28%,25.08% 96.79%,32.34% 96.42%,42.35% 96.60%,47.25% 95.85%,51.57% 95.85%,56.08% 96.60%,67.66% 96.42%,75.71% 96.79%,76.10% 96.42%,76.30% 83.21%,75.31% 61.51%,89.44% 53.77%,89.64% 53.21%,87.68% 49.81%,79.24% 31.70%,75.12% 24.91%,71.39% 22.08%,58.24% 15.85%,56.48% 14.15%,53.73% 10.38%,50.98% 9.25%,50.98% 7.17%,52.55% 5.47%,52.75% 3.58%,51.77% 2.26%)",
+
+"polygon(46.35% 1.89%,45.17% 2.45%,44.19% 3.96%,46.15% 2.26%,47.72% 2.26%,49.10% 3.58%,49.10% 5.09%,47.33% 7.17%,47.14% 9.25%,44% 10.75%,41.64% 14.34%,38.70% 16.79%,37.72% 16.79%,25.16% 23.21%,23% 25.28%,20.25% 30.75%,15.15% 48.87%,10.24% 71.70%,8.48% 83.58%,8.28% 89.25%,8.87% 91.13%,8.48% 96.23%,16.13% 97.92%,17.11% 97.74%,18.49% 92.83%,19.47% 91.70%,20.45% 89.25%,22.21% 89.06%,22.41% 96.04%,23% 96.98%,39.87% 96.60%,44.98% 95.47%,47.14% 95.47%,51.84% 96.42%,61.07% 96.23%,71.86% 96.98%,72.25% 96.79%,72.45% 90.38%,72.84% 90%,74.61% 90.19%,76.18% 93.21%,77.55% 97.92%,85.60% 96.79%,85.60% 91.51%,86.19% 90.57%,86.19% 84.53%,84.81% 73.21%,82.06% 58.68%,79.12% 46.04%,75.39% 32.45%,72.65% 26.23%,71.08% 24.15%,57.34% 16.79%,55.97% 16.60%,53.22% 14.15%,51.65% 11.51%,50.47% 10.38%,47.72% 9.25%,47.72% 7.17%,49.49% 5.09%,49.49% 3.58%,48.12% 2.08%)",
+
+"polygon(50% 2%,55% 3%,57% 8%,64% 15%,78% 22%,85% 32%,96% 54%,81% 62%,81% 97%,19% 97%,19% 62%,4% 54%,15% 32%,22% 22%,36% 15%,43% 8%)",
+"polygon(50% 2%,55% 3%,57% 8%,66% 14%,82% 23%,91% 37%,96% 55%,83% 63%,82% 97%,18% 97%,17% 63%,4% 55%,9% 37%,18% 23%,34% 14%,43% 8%)",
+"polygon(48% 2%,53% 3%,55% 8%,61% 15%,76% 22%,83% 30%,91% 48%,98% 84%,88% 98%,78% 91%,73% 98%,27% 98%,22% 91%,12% 98%,2% 84%,9% 48%,17% 30%,24% 22%,39% 15%,45% 8%)",
+"polygon(50% 2%,55% 3%,57% 8%,66% 14%,82% 23%,91% 37%,96% 55%,83% 63%,82% 97%,18% 97%,17% 63%,4% 55%,9% 37%,18% 23%,34% 14%,43% 8%)",
+"polygon(50% 2%,55% 3%,57% 8%,64% 15%,78% 22%,85% 32%,96% 54%,81% 62%,81% 97%,19% 97%,19% 62%,4% 54%,15% 32%,22% 22%,36% 15%,43% 8%)",
+"polygon(50% 2%,55% 3%,57% 8%,66% 14%,82% 23%,91% 37%,96% 55%,83% 63%,82% 97%,18% 97%,17% 63%,4% 55%,9% 37%,18% 23%,34% 14%,43% 8%)"
+];
+
+const rack=document.getElementById("rack");
+const cap=document.getElementById("cap");
+const capName=cap.querySelector("b");
+const capPrice=cap.querySelector("span");
+const big=document.getElementById("big");
+const big2=document.getElementById("big2");
+let active=-1;
+
+function paint(el,k){
+const src=products[k][2];
+const col=src%5,row=Math.floor(src/5);
+const sx=el.offsetWidth/BW,sy=el.offsetHeight/CH;
+const xb=col*CW-PAD,yb=ROWY[row];
+el.style.backgroundImage=`url("${SHEET}")`;
+el.style.backgroundSize=`${SW/BW*el.offsetWidth}px ${SH/CH*el.offsetHeight}px`;
+el.style.backgroundPosition=`${-xb*sx}px ${-yb*sy}px`;
+el.style.clipPath=shapes[src];
+}
+
+products.forEach((p,i)=>{
+const item=document.createElement("button");
+item.className="garment";
+item.type="button";
+item.setAttribute("aria-label",p[0]);
+item.style.left=(150+(i+.5)*120-144.5)+"px";
+
+const inner=document.createElement("span");
+inner.className="garment-inner";
+const face=document.createElement("span");
+face.className="garment-face";
+inner.appendChild(face);
+item.appendChild(inner);
+rack.appendChild(item);
+
+paint(face,i);
+
+function caption(){
+if(active!==-1)return;
+capName.textContent=p[0];
+capPrice.textContent=p[1];
+cap.style.left=(parseFloat(item.style.left)+144.5)+"px";
+cap.classList.add("on");
+}
+item.addEventListener("mouseenter",caption);
+item.addEventListener("focus",caption);
+item.addEventListener("mouseleave",()=>{if(active===-1)cap.classList.remove("on")});
+item.addEventListener("blur",()=>{if(active===-1)cap.classList.remove("on")});
+item.addEventListener("click",()=>openDetail(i));
+});
+
+function updateDetail(){
+const p=products[active];
+paint(big,active);
+document.getElementById("num").textContent=
+String(active+1).padStart(2,"0")+" / "+String(products.length).padStart(2,"0");
+document.getElementById("name").textContent=p[0];
+document.getElementById("price").textContent=p[1];
+}
+function openDetail(i){
+active=i;
+document.body.classList.add("open");
+cap.classList.remove("on");
+updateDetail();
+}
+function closeDetail(){
+active=-1;
+document.body.classList.remove("open");
+}
+function step(d){
+if(active<0)return;
+const old=active;
+active=(active+d+products.length)%products.length;
+paint(big2,old);
+big2.style.opacity=".2";
+big.style.opacity="0";
+updateDetail();
+requestAnimationFrame(()=>{
+big.style.opacity="1";
+big2.style.opacity="0";
+});
+}
+
+document.querySelector(".hit").addEventListener("click",closeDetail);
+document.getElementById("close").addEventListener("click",closeDetail);
+document.getElementById("prev").addEventListener("click",()=>step(-1));
+document.getElementById("next").addEventListener("click",()=>step(1));
+
+document.addEventListener("keydown",e=>{
+if(active<0)return;
+if(e.key==="Escape")closeDetail();
+if(e.key==="ArrowLeft")step(-1);
+if(e.key==="ArrowRight")step(1);
+});
+
+const track=document.getElementById("track");
+const seq=["OFFCUT","•","LIMITED RUN","•","NO RESTOCKS","•"];
+for(let i=0;i<16;i++){
+seq.forEach(t=>{
+const s=document.createElement("span");
+s.textContent=t;
+track.appendChild(s);
+});
+}
+
+function fit(){
+const k=Math.min(innerWidth/1500,innerHeight/1000);
+const art=document.getElementById("art");
+art.style.transform=`scale(${k})`;
+art.style.left=((innerWidth-1500*k)/2)+"px";
+art.style.top=((innerHeight-1000*k)/2)+"px";
+}
+fit();
+addEventListener("resize",fit);
+</script>
+</body>
+  </html>
+  
